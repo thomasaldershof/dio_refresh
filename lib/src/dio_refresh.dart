@@ -118,9 +118,8 @@ class DioRefreshInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     final request = err.requestOptions;
-    final response = err.response;
 
-    if (tokenManager.accessToken != null && shouldRefresh(response)) {
+    if (tokenManager.accessToken != null && shouldRefresh(err)) {
       if (tokenManager.isRefreshing.value) {
         await _checkForRefreshToken();
       } else {

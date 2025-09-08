@@ -37,11 +37,11 @@ typedef OnRefreshCallback = Future<TokenStore> Function(Dio dio, TokenStore toke
 ///
 /// Example:
 /// ```dart
-/// bool shouldRefresh(Response? response) {
-///   return response?.statusCode == 401 || response?.statusCode == 403;
+/// bool shouldRefresh(DioException? dioException) {
+///   return dioException?.response?.statusCode == 401 || dioException?.response?.statusCode == 403;
 /// }
 /// ```
-typedef ShouldRefreshCallback = bool Function(Response? response);
+typedef ShouldRefreshCallback = bool Function(DioException dioException);
 
 /// A callback function that generates the authorization headers for API requests.
 ///
