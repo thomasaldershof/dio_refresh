@@ -24,7 +24,7 @@ void main() {
         'Authorization': 'Bearer ${tokenStore.accessToken}',
       };
     },
-    shouldRefresh: (err) => err?.response?.statusCode == 401 || err?.response?.statusCode == 403,
+    shouldRefresh: (err) => err.response?.statusCode == 401 || err.response?.statusCode == 403,
     onRefresh: (dio, tokenStore) async {
       final response = await dio.post('/refresh', data: {
         'refresh_token': tokenStore.refreshToken,
