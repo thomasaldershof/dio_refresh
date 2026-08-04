@@ -19,10 +19,12 @@ Add the following dependency to your `pubspec.yaml` file:
 ```yaml
 dependencies:
   dio: ^5.0.0
-  dio_refresh: ^1.0.0
+  dio_refresh: ^1.2.1 # recommended
   flutter:
     sdk: flutter
 ```
+
+Recommended version: `1.2.1`.
 
 Then, run:
 
@@ -39,6 +41,8 @@ To use the `DioRefreshInterceptor`, you'll need to define the following callback
 - `OnRefreshCallback`: Handles the logic for refreshing the access token.
 - `ShouldRefreshCallback`: Determines whether a response requires a token refresh.
 - `TokenHeaderCallback`: Generates headers with the access token.
+- `IsTokenValidCallback`: A callback function to check whether a token is valid.
+- `OnRefreshFailedCallback` (optional): Handles refresh failures for side effects such as logging out the user.
 
 ### Example
 
@@ -80,6 +84,10 @@ void main() {
         refreshToken: response.data['refreshToken'],
       );
     },
+    onRefreshFailedCallback: (error) {
+      // Handle refresh failure side effects, such as clearing session state.
+      print('Token refresh failed: $error');
+    },
   ));
 }
 ```
@@ -111,6 +119,7 @@ print(tokenManager.accessToken);
     - `authHeader`: Callback to generate authorization headers.
     - `shouldRefresh`: Callback to determine if a refresh is needed.
     - `onRefresh`: Callback to handle the refresh logic and return a new `TokenStore`.
+    - `onRefreshFailedCallback`: Optional callback invoked when `onRefresh` throws.
     - `isTokenValid`: Optional callback to validate if a token is still valid.
     - `retryInterceptors`: Optional list of interceptors to be added to the `Dio` instance used for retrying requests. This is useful for adding logging or other custom interceptors to the retry mechanism. **Note:** Do not add another `DioRefreshInterceptor` to this list, as it may cause an infinite loop.
 
@@ -120,7 +129,6 @@ print(tokenManager.accessToken);
     - `setToken(TokenStore tokenStore)`: Updates the stored access and refresh tokens.
     - `accessToken`: Returns the current access token.
     - `refreshToken`: Returns the current refresh token.
-    - `isRefreshing`: A `ValueNotifier` that indicates whether a refresh is in progress.
 
 ### `typedef` Callbacks
 
@@ -135,6 +143,9 @@ print(tokenManager.accessToken);
     - Default implementation checks if the JWT token is not expired.
     - Called if [shouldRefresh] returns `true`.
     - Can be customized to implement different token validation strategies.
+- **`OnRefreshFailedCallback`**: `void Function(dynamic)`
+    - Optional callback called when token refresh throws an error.
+    - Useful for side effects such as logging, analytics, or forcing sign-out.
 
 ### Example with Custom Token Validation
 
