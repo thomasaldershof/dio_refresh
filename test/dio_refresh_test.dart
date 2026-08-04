@@ -112,7 +112,7 @@ DioRefreshInterceptor _refreshInterceptor({
 }) {
   return DioRefreshInterceptor(
     tokenManager: tokenManager,
-    shouldRefresh: (response) => response?.statusCode == 401,
+    shouldRefresh: (err) => err.response?.statusCode == 401,
     isTokenValid: (_) => true,
     authHeader: (store) => {
       'Authorization': 'Bearer ${store.accessToken}',
@@ -262,7 +262,8 @@ void main() {
     expect(refreshCalls, 1);
   });
 
-  test('does not refresh or retry when request was sent without access token '
+  test(
+      'does not refresh or retry when request was sent without access token '
       'but TokenManager gains tokens before onError', () async {
     tokenManager.resetForTest();
     tokenManager.setToken(TokenStore(
@@ -277,7 +278,7 @@ void main() {
     dio.interceptors.add(
       DioRefreshInterceptor(
         tokenManager: tokenManager,
-        shouldRefresh: (response) => response?.statusCode == 401,
+        shouldRefresh: (err) => err.response?.statusCode == 401,
         isTokenValid: (_) => true,
         authHeader: (store) {
           if (store.accessToken == null) return {};
@@ -329,7 +330,7 @@ void main() {
     dio.interceptors.add(
       DioRefreshInterceptor(
         tokenManager: tokenManager,
-        shouldRefresh: (response) => response?.statusCode == 401,
+        shouldRefresh: (err) => err.response?.statusCode == 401,
         isTokenValid: (_) => true,
         // Simulate a path where auth lands only via authHeader merge at refresh.
         authHeader: (store) => {
@@ -348,7 +349,8 @@ void main() {
               },
             );
           });
-          await refreshDio.get('https://accounts.example.com/api/users/refresh');
+          await refreshDio
+              .get('https://accounts.example.com/api/users/refresh');
           return TokenStore(
             accessToken: 'new-a',
             refreshToken: 'new-r',
