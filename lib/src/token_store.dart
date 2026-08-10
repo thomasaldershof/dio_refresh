@@ -41,4 +41,15 @@ class TokenStore {
     required this.accessToken,
     required this.refreshToken,
   });
+
+  @override
+  int get hashCode => Object.hash(accessToken, refreshToken);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is TokenStore &&
+        other.accessToken == accessToken &&
+        other.refreshToken == refreshToken;
+  }
 }
