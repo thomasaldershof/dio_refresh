@@ -164,11 +164,11 @@ class DioRefreshInterceptor extends Interceptor {
     // Only refresh/retry when THIS request left with an access token. Tokens
     // appearing on TokenManager after send (login / another request's setToken)
     // must not open the gate for a request that never had auth headers.
-    final shouldAttemptRefresh = sentToken != null &&
-        tokenManager.accessToken != null &&
-        shouldRefreshToken;
+    // final shouldAttemptRefresh = sentToken != null &&
+    //     tokenManager.accessToken != null &&
+    //     shouldRefreshToken;
 
-    if (shouldAttemptRefresh) {
+    if (shouldRefreshToken) {
       final alreadyRefreshed = sentGeneration != null &&
           tokenManager.tokenGeneration != sentGeneration;
 
